@@ -5,6 +5,8 @@ import './lib/Tick.sol';
 import './lib/Position.sol';
 import './interfaces/IERC20.sol';
 import "./interfaces/IUniswapV3MintCallback.sol";
+import "./interfaces/IUniswapV3SwapCallback.sol";
+
 
 contract UniswapV3Pool {
 
@@ -28,6 +30,16 @@ contract UniswapV3Pool {
         uint128 amount,
         uint256 amount0,
         uint256 amount1
+    );
+
+    event Swap(
+        address sender,
+        address indexed recipient,
+        int256 amount0,
+        int256 amount1,
+        uint160 sqrtPriceX96,
+        uint128 liquidity,
+        int24 tick
     );
 
 
@@ -111,6 +123,28 @@ function mint( address owner, int24 lowerTick, int24 upperTick, uint128 amount) 
 
 emit Mint(msg.sender, owner, lowerTick, upperTick, amount, amount0, amount1);
 
+
+}
+
+// Swap function takes the tokens from the user that has to be swapped and returns the tokens to the recipient
+function swap (address recipient) external returns (int256 amount0, int256 amount1){
+    int24 nextTick = 85184;
+    uint160 nextPrice = 5604469350942327889444743441197;
+
+    amount0 = -0.008396714242162444 ether;
+    amount1 = 42 ether;
+
+    (slot0.tick, slot0.sqrtPriceX96) = (nextTick, nextPrice);
+
+
+    IERC20(token0).transfer(recipient, uint256(-amount0));
+
+    uint256 balance1Before = balance1();
+    IUniswapV3SwapCallback(msg.sender).uniswapV3SwapCallback(amount0, amount1);
+    if (balance1Before + uint256(amount1) < balance1())
+    revert InsufficientInputAmount();
+
+    emit Swap(msg.sender, recipient, amount0, amount1, nextPrice, liquidity, nextTick);
 
 }
 
