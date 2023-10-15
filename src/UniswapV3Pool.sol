@@ -3,12 +3,32 @@ pragma solidity ^0.8.14;
 
 import './lib/Tick.sol';
 import './lib/Position.sol';
+import './interfaces/IERC20.sol';
+import "./interfaces/IUniswapV3MintCallback.sol";
 
 contract UniswapV3Pool {
 
     using Tick for mapping(int24 => Tick.Info);
     using Position for mapping(bytes32 =>Position.Info);
     using Position for Position.Info;
+
+
+    // Errors
+    error InsufficientInputAmount();
+    error InvalidTickRange();
+    error ZeroLiquidity();
+
+    // Events
+
+  event Mint(
+        address sender,
+        address indexed owner,
+        int24 indexed tickLower,
+        int24 indexed tickUpper,
+        uint128 amount,
+        uint256 amount0,
+        uint256 amount1
+    );
 
 
     int24 internal constant MIN_TICK = -887272;
@@ -93,6 +113,13 @@ emit Mint(msg.sender, owner, lowerTick, upperTick, amount, amount0, amount1);
 
 
 }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // INTERNAL
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
 
 function balance0() internal returns (uint256 balance){
