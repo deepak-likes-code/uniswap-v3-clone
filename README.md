@@ -1,66 +1,23 @@
-## Foundry
+## Uniswap V3 Clone
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+We'll be recreating the core smart contracts of Uniswap V3 and a simple UI using next JS to interact with the smart contracts.
 
-Foundry consists of:
+**Tools Used**
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- We'll be using Foundry to write, compile, test and deploy our smart contracts.
+- We'll be using libraries and interfaces to keep the code modular and easy to extend
 
-## Documentation
+## Math Behind Uniswap V3
 
-https://book.getfoundry.sh/
+**Uniswap V2**
+It's important to understand how uniswap V2's mathematics works before jumping on to Uniswap V3
 
-## Usage
+Constant product formula
+x\*y= k
 
-### Build
+Uniswap V2 is an automated market maker (AMM) and relies on the principle that the product amount of token0 (x) and token1 (y) is constant (k), and rebalance updates the cost of the other token in order to maintain the constant k.
 
-```shell
-$ forge build
-```
+**Uniswap V3**
+Some of the drawbacks of Uniswap V2 are that the tokens provided by the liquidity providers have to spread out throughout the curve k= x\*y in order to maintain the constant and that renders the liquidity quite inefficient . This is especially true for stable coins which trade in very narrow ranges. Example: ETH/USDC, USDC/USDT pairs.
 
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+Uniswap V3 brings in the concept of Concentrated Liquidity that allows the Liquidity Providers to deploy there capital in narrow price ranges. Basically each price range of specific token pool is a specific smart contract in itself.
